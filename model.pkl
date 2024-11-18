@@ -1,0 +1,29 @@
+import pickle
+from sklearn.ensemble import RandomForestClassifier  # Example model
+from sklearn.feature_extraction.text import TfidfVectorizer
+from sklearn.model_selection import train_test_split
+from sklearn.datasets import make_classification  # Replace with your actual dataset
+import pandas as pd
+
+# Example dataset: replace with your actual dataset
+data = pd.read_csv('fake_news.csv')  # Adjust this with your CSV path
+X = data['text']  # Replace 'text' with the actual column name for news content
+y = data['label']  # Replace 'label' with the column name for labels (0 or 1 for fake/real)
+
+# Vectorize the text data
+vectorizer = TfidfVectorizer()
+X_vectorized = vectorizer.fit_transform(X)
+
+# Train-test split
+X_train, X_test, y_train, y_test = train_test_split(X_vectorized, y, test_size=0.2, random_state=42)
+
+# Initialize and train model
+model = RandomForestClassifier()
+model.fit(X_train, y_train)
+
+# Save model and vectorizer to pickle files
+with open('model.pkl', 'wb') as model_file:
+    pickle.dump(model, model_file)
+
+with open('vectorizer.pkl', 'wb') as vectorizer_file:
+    pickle.dump(vectorizer, vectorizer_file)
